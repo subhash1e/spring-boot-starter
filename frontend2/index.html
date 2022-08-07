@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            #inputFields{
+                position: absolute;
+                align-content: center;
+                width: 70%;
+                left: 10%;
+                right: 10%;
+                top: 2%;
+                padding: 30px;
+                border: solid;
+                border-radius: 3
+            }
+            body{
+                background-color: azure;
+            }
+            #outputField{
+                margin-top: 50px;
+                padding: 20px;
+                width: 70%;
+                position: absolute;
+                left: 10%;
+                top: 30%;
+                padding: 30px;
+                border: solid;
+                border-radius: 3
+            }
+
+        </style>
+    </head>
+<body>
+
+
+
+<div id="inputFields">
+    <h1>Student DB</h1>
+    <label for="name"> Name:   </label>
+    <input type="text" id="name" name="name"/>
+    <br/><br/>
+
+
+    <label for="address">Address: </label>
+    <input type="text" id="address" name="name"/>
+    <br/><br/>
+
+
+   <button id="Sub" onclick="fun()">Submit</button>
+
+</div>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<hr>
+
+
+<div id="outputField">
+    <h1>Data</h1>
+    <table id="students"></table>
+
+</div>
+   
+
+
+<script>
+const x = document.getElementById("Sub");
+
+//get data from api and show here
+
+
+// api url
+const api_url =  "http://localhost:8080/student/getAll";
+  
+// Defining async function
+async function getapi(url) {
+    
+    // Storing response
+    const response = await fetch(url);
+    
+    // Storing data in form of JSON
+    var data = await response.json();
+    console.log(data);
+    show(data);
+}
+// Calling that async function
+getapi(api_url);
+
+// Function to define innerHTML for HTML table
+function show(data) {
+    let tab = 
+        `<tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Address</th>
+         </tr>`;
+    
+    // Loop to access all rows 
+    for (let r of data) {
+        tab += `<tr> 
+    <td>${r.id} </td>
+    <td>${r.name}</td>
+    <td>${r.address}</td>        
+</tr>`;
+    }
+    // Setting innerHTML as tab variable
+    document.getElementById("students").innerHTML = tab;
+}
+
+
+
+
+
+//============================
+
+
+ function fun(){
+    name = document.getElementById("name").value
+    address =document.getElementById("address").value
+   
+    // e.preventDefault()
+    if(name==null||address==null) {
+        console.log("error")
+        console.log(name)
+        
+    }else{ const student={name,address}
+    console.log(student)
+   
+    fetch("http://localhost:8080/student/add",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(student)
+
+  }).then(()=>{
+    console.log("New Student added")
+  })
+}
+sleep(2000);
+getapi(api_url);
+
+
+};
+
+</script>
+
+</body>
+</html>
